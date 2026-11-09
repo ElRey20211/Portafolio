@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joel Arauz | Creative Technologist & Full Stack Developer</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet" />
+  
+  <!-- Three.js CDN for interactive 3D WebGL background -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NOISE OVERLAY -->
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- WEBGL 3D BACKGROUND CANVAS -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- FLOATING PROJECT PREVIEW TOOLTIP -->
+  <div class="hover-preview" id="hoverPreview">
+    <div class="preview-inner">
+      <div class="preview-header">
+        <span class="preview-dot red"></span>
+        <span class="preview-dot yellow"></span>
+        <span class="preview-dot green"></span>
+        <span class="preview-url mono" id="previewUrl">https://canada20.neocities.org</span>
+      </div>
+      <div class="preview-visual" id="previewVisual">
+        <div class="mock-store-screen">
+          <div class="mock-topbar mono">CANADA20 // VIRTUAL STORE</div>
+          <div class="mock-items">
+            <div class="mock-item"></div>
+            <div class="mock-item"></div>
+            <div class="mock-item active"></div>
+          </div>
+          <div class="mock-btn-badge mono">DEMO ↗</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM MOUSE CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- AUDIO SOUND FX CONTROL -->
+  <button class="sound-toggle" id="soundToggle" title="Toggle UI Sound Effects" aria-label="Toggle Sound">
+    <span class="sound-icon mono" id="soundIcon">[SND:OFF]</span>
+  </button>
+
+  <!-- ===== PRELOADER ===== -->
+  <div class="loader" id="loader">
+    <div class="loader-inner">
+      <div class="loader-badge mono">&lt;SYSTEM BOOT // JOEL_ARAUZ&gt;</div>
+      <div class="loader-num" id="loaderNum">00</div>
+      <div class="loader-sub mono" data-en="INITIALIZING ENGINES..." data-es="INICIALIZANDO MOTORES...">INITIALIZING ENGINES...</div>
+    </div>
+    <div class="loader-bar-wrap">
+      <div class="loader-bar" id="loaderBar"></div>
+    </div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header id="header">
+    <div class="header-inner">
+      <a href="#" class="logo mono magnetic">&lt;ElRey20211 /&gt;</a>
+
+      <nav class="main-nav">
+        <a href="#about" class="nav-link magnetic">
+          <span data-en="About" data-es="Sobre mí">About</span>
+          <span data-en="About" data-es="Sobre mí" aria-hidden="true">About</span>
+        </a>
+        <a href="#skills" class="nav-link magnetic">
+          <span data-en="Skills" data-es="Skills">Skills</span>
+          <span data-en="Skills" data-es="Skills" aria-hidden="true">Skills</span>
+        </a>
+        <a href="#projects" class="nav-link magnetic">
+          <span data-en="Projects" data-es="Proyectos">Projects</span>
+          <span data-en="Projects" data-es="Proyectos" aria-hidden="true">Projects</span>
+        </a>
+        <a href="#terminal" class="nav-link magnetic">
+          <span data-en="Terminal" data-es="Terminal">Terminal</span>
+          <span data-en="Terminal" data-es="Terminal" aria-hidden="true">Terminal</span>
+        </a>
+        <a href="#contact" class="nav-link magnetic">
+          <span data-en="Contact" data-es="Contacto">Contact</span>
+          <span data-en="Contact" data-es="Contacto" aria-hidden="true">Contact</span>
+        </a>
+      </nav>
+
+      <div class="header-right">
+        <!-- THEME TOGGLE (LIGHT / DARK) -->
+        <button class="theme-btn magnetic mono" id="themeBtn" aria-label="Toggle Theme">
+          <span id="themeLabel">LIGHT</span>
+        </button>
+
+        <!-- LANGUAGE TOGGLE -->
+        <button class="lang-btn magnetic" id="langBtn" aria-label="Toggle Language">
+          <span id="langEN" class="lang-opt active">EN</span>
+          <span class="sep">/</span>
+          <span id="langES" class="lang-opt">ES</span>
+        </button>
+
+        <button class="burger" id="burger" aria-label="Menu">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobileNav">
+    <nav>
+      <a href="#about"    onclick="closeBurger()" data-en="About"    data-es="Sobre mí">About</a>
+      <a href="#skills"   onclick="closeBurger()" data-en="Skills"   data-es="Skills">Skills</a>
+      <a href="#projects" onclick="closeBurger()" data-en="Projects" data-es="Proyectos">Projects</a>
+      <a href="#terminal" onclick="closeBurger()" data-en="Terminal" data-es="Terminal">Terminal</a>
+      <a href="#contact"  onclick="closeBurger()" data-en="Contact"  data-es="Contacto">Contact</a>
+    </nav>
+  </div>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section id="hero">
+    <div class="hero-status">
+      <span class="pulse-dot"></span>
+      <span class="mono small" data-en="Status: Online · Bolivia" data-es="Estado: En línea · Bolivia">Status: Online · Bolivia</span>
+      <span class="badge-tag mono" data-en="AGE 16 // CODING 6+ YRS" data-es="EDAD 16 // 6+ AÑOS CODING">AGE 16 // CODING 6+ YRS</span>
+    </div>
+
+    <!-- Editorial Name Hero -->
+    <div class="hero-center">
+      <div class="hero-line">
+        <div class="clip-wrap"><h1 class="hero-word hero-first">Joel</h1></div>
+      </div>
+      <div class="hero-line hero-line-2">
+        <div class="hero-badge-wrap magnetic">
+          <!-- ROTATING CIRCULAR BADGE -->
+          <div class="rotating-badge">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path id="badgePath"
+                d="M 100,100 m -72,0 a 72,72 0 1,1 144,0 a 72,72 0 1,1 -144,0"
+                fill="none"/>
+              <text class="badge-text">
+                <textPath href="#badgePath" startOffset="0%">
+                  DEVELOPER · STUDENT · BOLIVIA · CREATIVE CODER ·
+                </textPath>
+              </text>
+              <circle cx="100" cy="100" r="4" class="badge-dot"/>
+            </svg>
+          </div>
+        </div>
+        <div class="clip-wrap"><h1 class="hero-word hero-last">Arauz</h1></div>
+      </div>
+    </div>
+
+    <!-- Hero Bottom Interactive Bar -->
+    <div class="hero-bottom">
+      <div class="hero-typing mono">
+        <span class="prompt-sym">&gt;</span> <span id="typingText"></span><span class="blink">_</span>
+      </div>
+      <p class="hero-bio" data-en="Computer Engineering student building interactive digital experiences and full-stack solutions." data-es="Estudiante de Ingeniería Informática construyendo experiencias digitales interactivas y soluciones full-stack.">
+        Computer Engineering student building interactive digital experiences and full-stack solutions.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="cta-link magnetic" data-en="Explore Projects ↓" data-es="Explorar Proyectos ↓">Explore Projects ↓</a>
+        <a href="#terminal" class="cta-terminal-btn magnetic mono" data-en="&gt;_ Terminal" data-es="&gt;_ Terminal">&gt;_ Terminal</a>
+      </div>
+    </div>
+
+    <!-- Infinite Tech Marquee -->
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span>THREE.JS 3D</span><em>//</em>
+        <span>HTML5 & CSS3</span><em>//</em>
+        <span>JAVASCRIPT ES6+</span><em>//</em>
+        <span>DJANGO</span><em>//</em>
+        <span>NODE.JS</span><em>//</em>
+        <span>PYTHON</span><em>//</em>
+        <span>REST APIS</span><em>//</em>
+        <span>WEB AUDIO API</span><em>//</em>
+        <span>FULL STACK</span><em>//</em>
+        <span>THREE.JS 3D</span><em>//</em>
+        <span>HTML5 & CSS3</span><em>//</em>
+        <span>JAVASCRIPT ES6+</span><em>//</em>
+        <span>DJANGO</span><em>//</em>
+        <span>NODE.JS</span><em>//</em>
+        <span>PYTHON</span><em>//</em>
+        <span>REST APIS</span><em>//</em>
+        <span>WEB AUDIO API</span><em>//</em>
+        <span>FULL STACK</span><em>//</em>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="mono" data-en="01 // About & Philosophy" data-es="01 // Sobre mí & Filosofía">01 // About & Philosophy</span>
+        <div class="eyebrow-line"></div>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-left">
+          <h2 class="section-heading reveal-clip" data-en="Engineering logic meets creative interaction." data-es="Lógica ingenieril fusionada con interacción creativa.">
+            Engineering<br><em>logic meets</em><br>creative<br>interaction.
+          </h2>
+          <div class="philosophy-card tilt-card reveal-up">
+            <span class="mono quote-sym">“</span>
+            <p class="quote-text" data-en="Code is not just syntax; it's a digital canvas where architecture, motion and aesthetics merge into real value." data-es="El código no es solo sintaxis; es un lienzo digital donde la arquitectura, el movimiento y la estética se unen para generar valor real.">
+              Code is not just syntax; it's a digital canvas where architecture, motion and aesthetics merge into real value.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-right">
+          <div class="about-text reveal-up">
+            <p data-en="I'm Joel, a 16-year-old developer and Computer Engineering student based in Bolivia. I began coding at age 10 out of pure curiosity—turning simple HTML tags into living web pages. Over the past 6 years, that passion has evolved into building scalable backend architectures and fluid, award-grade frontend interfaces." data-es="Soy Joel, un desarrollador de 16 años y estudiante de Ingeniería Informática radicado en Bolivia. Empecé a programar a los 10 años por pura curiosidad, convirtiendo etiquetas HTML en páginas vivas. Durante los últimos 6 años, esa pasión evolucionó hacia la construcción de arquitecturas backend escalables e interfaces frontend fluidas de alta calidad.">
+              I'm Joel, a 16-year-old developer and Computer Engineering student based in Bolivia. I began coding at age 10 out of pure curiosity—turning simple HTML tags into living web pages. Over the past 6 years, that passion has evolved into building scalable backend architectures and fluid, award-grade frontend interfaces.
+            </p>
+            <p class="mt" data-en="Currently mastering Django, Python and Node.js while pushing the boundaries of creative web development (WebGL, 3D math and micro-interactions)." data-es="Actualmente dominando Django, Python y Node.js mientras exploro las fronteras del desarrollo web interactivo (WebGL, matemáticas 3D y microinteracciones).">
+              Currently mastering Django, Python and Node.js while pushing the boundaries of creative web development (WebGL, 3D math and micro-interactions).
+            </p>
+          </div>
+
+          <div class="stats reveal-up d1">
+            <div class="stat tilt-card">
+              <span class="stat-n accent">6+</span>
+              <span class="stat-l mono" data-en="Years Coding" data-es="Años Programando">Years Coding</span>
+            </div>
+            <div class="stat tilt-card">
+              <span class="stat-n accent">16</span>
+              <span class="stat-l mono" data-en="Years of Age" data-es="Años de Edad">Years of Age</span>
+            </div>
+            <div class="stat tilt-card">
+              <span class="stat-n accent">100%</span>
+              <span class="stat-l mono" data-en="Self-Driven" data-es="Autodidacta">Self-Driven</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills" class="section dark-section">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="mono" data-en="02 // Technical Arsenal" data-es="02 // Arsenal Técnico">02 // Technical Arsenal</span>
+        <div class="eyebrow-line"></div>
+      </div>
+
+      <div class="skills-wrap">
+        <div class="skill-col tilt-card reveal-up">
+          <div class="skill-code mono">[01]</div>
+          <div class="skill-label mono" data-en="Frontend & Creative" data-es="Frontend & Creativo">Frontend & Creative</div>
+          <ul class="skill-list">
+            <li>
+              <span>HTML5 / Semantic</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 95%;"></div></div>
+            </li>
+            <li>
+              <span>CSS3 / Animations / Layouts</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 90%;"></div></div>
+            </li>
+            <li>
+              <span>JavaScript ES6+ / Canvas</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 85%;"></div></div>
+            </li>
+            <li>
+              <span>Three.js & WebGL basics</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 70%;"></div></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="skill-col tilt-card reveal-up d1">
+          <div class="skill-code mono">[02]</div>
+          <div class="skill-label mono" data-en="Backend & Architecture" data-es="Backend & Arquitectura">Backend & Architecture</div>
+          <ul class="skill-list">
+            <li>
+              <div class="skill-head">
+                <span>Django / Python</span>
+                <span class="badge mono" data-en="studying" data-es="estudiando">studying</span>
+              </div>
+              <div class="skill-meter"><div class="skill-fill" style="width: 65%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-head">
+                <span>Node.js / Express</span>
+                <span class="badge mono" data-en="studying" data-es="estudiando">studying</span>
+              </div>
+              <div class="skill-meter"><div class="skill-fill" style="width: 60%;"></div></div>
+            </li>
+            <li>
+              <span>RESTful API Design</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 70%;"></div></div>
+            </li>
+            <li>
+              <span>Databases & Logic</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 65%;"></div></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="skill-col tilt-card reveal-up d2">
+          <div class="skill-code mono">[03]</div>
+          <div class="skill-label mono" data-en="Tooling & Environment" data-es="Herramientas & Entorno">Tooling & Environment</div>
+          <ul class="skill-list">
+            <li>
+              <span>Git & GitHub Workflows</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 85%;"></div></div>
+            </li>
+            <li>
+              <span>VS Code & Power Tools</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 90%;"></div></div>
+            </li>
+            <li>
+              <span>Web Audio Synthesis</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 75%;"></div></div>
+            </li>
+            <li>
+              <span>Neocities & Web Deployments</span>
+              <div class="skill-meter"><div class="skill-fill" style="width: 90%;"></div></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects" class="section">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="mono" data-en="03 // Selected Works" data-es="03 // Proyectos Destacados">03 // Selected Works</span>
+        <div class="eyebrow-line"></div>
+      </div>
+
+      <div class="project-list">
+
+        <!-- LIVE PROJECT: Virtual Store -->
+        <a href="https://canada20.neocities.org/#" target="_blank" rel="noopener" 
+           class="project-row reveal-up" 
+           data-preview-url="https://canada20.neocities.org/#" 
+           data-preview-title="Canada20 E-Commerce Store"
+           data-preview-type="store">
+          <div class="pr-left">
+            <span class="pr-num mono">01</span>
+            <div class="pr-info">
+              <h3 class="pr-title" data-en="Canada20 Virtual Store" data-es="Tienda Virtual Canada20">Canada20 Virtual Store</h3>
+              <p class="pr-desc" data-en="A responsive e-commerce web platform deployed on Neocities. Built with custom semantic HTML, modern CSS and reactive JavaScript for dynamic catalog interactions." data-es="Plataforma e-commerce responsiva alojada en Neocities. Construida con HTML semántico a medida, CSS moderno y JavaScript reactivo para catálogo interactivo.">
+                A responsive e-commerce web platform deployed on Neocities. Built with custom semantic HTML, modern CSS and reactive JavaScript for dynamic catalog interactions.
+              </p>
+            </div>
+          </div>
+          <div class="pr-right">
+            <div class="pr-tags">
+              <span>HTML5</span><span>CSS3</span><span>JAVASCRIPT</span><span>NEOCITIES</span>
+            </div>
+            <span class="pr-arrow magnetic">↗</span>
+          </div>
+        </a>
+
+        <!-- UPCOMING: Django App -->
+        <div class="project-row reveal-up d1 wip" 
+             data-preview-url="In Development: Django + PostgreSQL" 
+             data-preview-title="Full Stack Django App"
+             data-preview-type="django">
+          <div class="pr-left">
+            <span class="pr-num mono">02</span>
+            <div class="pr-info">
+              <h3 class="pr-title" data-en="Django Full Stack Platform" data-es="Plataforma Full Stack Django">Django Full Stack Platform</h3>
+              <p class="pr-desc" data-en="Architecture project exploring secure user authentication, database models, CRUD views and REST endpoints with Django framework." data-es="Proyecto de arquitectura explorando autenticación de usuarios, modelos de bases de datos, vistas CRUD y endpoints REST con Django.">
+                Architecture project exploring secure user authentication, database models, CRUD views and REST endpoints with Django framework.
+              </p>
+            </div>
+          </div>
+          <div class="pr-right">
+            <div class="pr-tags"><span>DJANGO</span><span>PYTHON</span><span>SQL</span></div>
+            <span class="pr-wip mono" data-en="In Progress" data-es="En Progreso">In Progress</span>
+          </div>
+        </div>
+
+        <!-- UPCOMING: Node.js API -->
+        <div class="project-row reveal-up d2 wip" 
+             data-preview-url="In Development: Node.js + Express API" 
+             data-preview-title="Node.js Microservices"
+             data-preview-type="node">
+          <div class="pr-left">
+            <span class="pr-num mono">03</span>
+            <div class="pr-info">
+              <h3 class="pr-title">Node.js Microservices & API</h3>
+              <p class="pr-desc" data-en="High-concurrency backend services, asynchronous route handling, JWT security and JSON API endpoints built on Express.js." data-es="Servicios backend de alta concurrencia, manejo de rutas asíncronas, seguridad JWT y endpoints de APIs JSON sobre Express.js.">
+                High-concurrency backend services, asynchronous route handling, JWT security and JSON API endpoints built on Express.js.
+              </p>
+            </div>
+          </div>
+          <div class="pr-right">
+            <div class="pr-tags"><span>NODE.JS</span><span>EXPRESS</span><span>REST</span></div>
+            <span class="pr-wip mono" data-en="In Progress" data-es="En Progreso">In Progress</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== INTERACTIVE TERMINAL ===== -->
+  <section id="terminal" class="section dark-section">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="mono" data-en="04 // Interactive CLI" data-es="04 // Terminal Interactiva">04 // Interactive CLI</span>
+        <div class="eyebrow-line"></div>
+      </div>
+
+      <div class="terminal-container tilt-card reveal-up">
+        <div class="terminal-bar">
+          <div class="terminal-dots">
+            <span class="t-dot red"></span>
+            <span class="t-dot yellow"></span>
+            <span class="t-dot green"></span>
+          </div>
+          <span class="terminal-title mono">bash — joel@bolivia-node: ~</span>
+          <span class="terminal-hint mono" data-en="Type 'help'" data-es="Escribe 'help'">Type 'help'</span>
+        </div>
+
+        <div class="terminal-screen mono" id="terminalScreen">
+          <div class="terminal-output" id="terminalOutput">
+            <p class="t-line dim">&gt; Welcome to Joel Arauz's interactive kernel [v3.0].</p>
+            <p class="t-line dim">&gt; Available commands: <span class="accent">help</span>, <span class="accent">about</span>, <span class="accent">skills</span>, <span class="accent">matrix</span>, <span class="accent">clear</span>.</p>
+          </div>
+          <div class="terminal-input-row">
+            <span class="prompt-sym">joel@dev:~$</span>
+            <input type="text" id="terminalInput" class="terminal-input" autocomplete="off" spellcheck="false" placeholder="..." />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" class="section contact-section">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="mono" data-en="05 // Contact & Inquiries" data-es="05 // Contacto & Oportunidades">05 // Contact & Inquiries</span>
+        <div class="eyebrow-line"></div>
+      </div>
+
+      <div class="contact-layout">
+        <h2 class="contact-cta reveal-clip" data-en="Ready to engineer the future together?" data-es="¿Listos para crear el futuro juntos?">
+          Ready to<br><em>engineer</em><br>the future<br>together?
+        </h2>
+
+        <div class="contact-links reveal-up d1">
+          <a href="https://github.com/ElRey20211" target="_blank" rel="noopener" class="clink magnetic">
+            <div class="clink-left">
+              <span class="clink-label">GitHub</span>
+              <span class="clink-sub mono">@ElRey20211 ↗</span>
+            </div>
+            <span class="clink-arr">↗</span>
+          </a>
+
+          <a href="https://canada20.neocities.org/#" target="_blank" rel="noopener" class="clink magnetic">
+            <div class="clink-left">
+              <span class="clink-label" data-en="Live Store Project" data-es="Proyecto Tienda en Vivo">Live Store Project</span>
+              <span class="clink-sub mono">canada20.neocities.org ↗</span>
+            </div>
+            <span class="clink-arr">↗</span>
+          </a>
+
+          <a href="mailto:your@email.com" class="clink magnetic">
+            <div class="clink-left">
+              <span class="clink-label" data-en="Direct Mail" data-es="Correo Directo">Direct Mail</span>
+              <span class="clink-sub mono">your@email.com</span>
+            </div>
+            <span class="clink-arr">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container footer-row">
+      <span class="mono small" data-en="Joel Arturo Arauz M. — Bolivia" data-es="Joel Arturo Arauz M. — Bolivia">Joel Arturo Arauz M. — Bolivia</span>
+      <span class="mono small" data-en="Designed with WebGL 3D, Audio Engine & Pure Code" data-es="Diseñado con WebGL 3D, Audio Engine y Puro Código">Designed with WebGL 3D, Audio Engine & Pure Code</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
